@@ -1,4 +1,4 @@
-# Combine list of names with domain name. v3 - Choice between firstName@domain.com or firstInitial_LastName@domain.com
+# Combine list of names with domain name. v4 - 1. Export new list of emails to a file., 2. Added error message in case original file not found.
 
 #Choice of naming convention
 def email_naming_convention():
@@ -11,9 +11,15 @@ def email_naming_convention():
 
 #Ask user for filename and create username naming convention from user input.
 def name_file():
-    filename= input("Enter filename: ")
-    with open(filename, "r") as file:
-        name_list = file.readlines()  
+    success = False
+    while not success:        
+        try:
+            filename= input("Enter filename: ")
+            with open(filename, "r") as file:
+                name_list = file.readlines()
+                success = True
+        except: 
+            print("File not found! Try again.")
 
     naming_conv = email_naming_convention()
 
@@ -42,12 +48,15 @@ def name_file():
 # Ask user for the domain.
 email_domain= input("Enter the domain: ")
 
-# Main function that combines names with domain.
+# Main function that combines names with domain and exports to a new file.
 def create_email(names, domain):    
     new_list = []
     for name in names:
-        new_list.append(name + "@" + domain)
-    print(new_list)
+        new_list.append(name + "@" + domain) 
+    list_s = "\n".join(new_list)
+    print(list_s)
+    with open("new_email_list.txt", "w") as file:
+        file.writelines("\n".join(new_list))
     return new_list
 
 create_email(name_file(), email_domain)
